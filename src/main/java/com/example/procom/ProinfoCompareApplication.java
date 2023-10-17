@@ -9,7 +9,6 @@ public class ProinfoCompareApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProinfoCompareApplication.class, args);
 		
-		CompareResponses.compareApi();
 	}
 
 }

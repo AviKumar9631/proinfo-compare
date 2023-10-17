@@ -13,20 +13,23 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.lumen.productinfo.response.model.CustomerAccountPrefInfo;
 import com.lumen.productinfo.response.model.RecordsChoice;
 import com.lumen.productinfo.response.model.RxProductInfoResponse;
 
+@Service
 public class CompareResponses {
 
 	public static void main(String[] args) {
-		compareApi();
+//		compareApi();
 	}
 
-	public static void compareApi() {
-		String[] tnArray = { "6363988017", "6363988018", "6363988019" };
+	public  void compareApi(List<String> tnArray) {
+		
+		List<Map<String, Object>> list = new ArrayList<>();
 
 		for (String tn : tnArray) {
 			System.out.println("---------------------------------------------------");
@@ -35,11 +38,18 @@ public class CompareResponses {
 			RxProductInfoResponse newApiResponse = callNewApi(tn);
 
 			Map<String, Object> resultMap= compareResponses(existingApiResponse, newApiResponse);
+			list.add(resultMap);
 			System.out.println(resultMap);
 		}
+		
+		System.out.println("-*******************************************************************-");
+
+		System.out.println(list);
+		
+	
 	}
 
-	private static Map<String, Object> compareResponses(RxProductInfoResponse oldr,
+	private  Map<String, Object> compareResponses(RxProductInfoResponse oldr,
 			RxProductInfoResponse newr) {
 		System.out.println("Called Compare API");
 
@@ -176,7 +186,7 @@ public class CompareResponses {
 		
 	}
 
-	private static RxProductInfoResponse callExistingApi(String tn) {
+	private  RxProductInfoResponse callExistingApi(String tn) {
 		String encoding = Base64.getEncoder().encodeToString(("rxdsl" + ":" + "Cntl#2017").getBytes());
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
@@ -190,7 +200,7 @@ public class CompareResponses {
 		return response.getBody();
 	}
 
-	private static RxProductInfoResponse callNewApi(String tn) {
+	private  RxProductInfoResponse callNewApi(String tn) {
 		String encoding = Base64.getEncoder().encodeToString(("rxdsl" + ":" + "Cntl#2017").getBytes());
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
