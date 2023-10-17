@@ -17,8 +17,8 @@ public class Controller {
 	private CompareResponses compareResponses;
 
 	@PostMapping("/compare")
-	public void compare(@RequestBody Map<String, List<String>> map) {
-		compareResponses.compareApi(map.get("data"));
+	public List<Map<String, Object>>  compare(@RequestBody Map<String, List<String>> map) {
+	 return	compareResponses.compareApi(map.get("data"));
 	}
 	
 }

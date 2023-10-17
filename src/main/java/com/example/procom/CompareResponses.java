@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.gson.Gson;
 import com.lumen.productinfo.response.model.CustomerAccountPrefInfo;
 import com.lumen.productinfo.response.model.RecordsChoice;
 import com.lumen.productinfo.response.model.RxProductInfoResponse;
@@ -27,7 +28,7 @@ public class CompareResponses {
 //		compareApi();
 	}
 
-	public  void compareApi(List<String> tnArray) {
+	public  List<Map<String, Object>> compareApi(List<String> tnArray) {
 		
 		List<Map<String, Object>> list = new ArrayList<>();
 
@@ -38,6 +39,7 @@ public class CompareResponses {
 			RxProductInfoResponse newApiResponse = callNewApi(tn);
 
 			Map<String, Object> resultMap= compareResponses(existingApiResponse, newApiResponse);
+			resultMap.put("Tn", tn);
 			list.add(resultMap);
 			System.out.println(resultMap);
 		}
@@ -46,7 +48,7 @@ public class CompareResponses {
 
 		System.out.println(list);
 		
-	
+		return list;
 	}
 
 	private  Map<String, Object> compareResponses(RxProductInfoResponse oldr,
@@ -119,7 +121,7 @@ public class CompareResponses {
        if(oldr.accountInformation.hasPrism != newr.accountInformation.hasPrism) a.add("hasPrism is different");
        if(oldr.accountInformation.isMadisonRiverCustomer != newr.accountInformation.isMadisonRiverCustomer) a.add("isMadisonRiverCustomer is different");
        if(oldr.accountInformation.marketUnit != null &&!oldr.accountInformation.marketUnit  .equals(  newr.accountInformation.marketUnit)) a.add("marketUnit is different");
-       if(oldr.accountInformation.customerDateTime != null && !oldr.accountInformation.customerDateTime .equals(  newr.accountInformation.customerDateTime) )a.add("customerDateTime is different");
+//       if(oldr.accountInformation.customerDateTime != null && !oldr.accountInformation.customerDateTime .equals(  newr.accountInformation.customerDateTime) )a.add("customerDateTime is different");
        if(oldr.accountInformation.customerTimeGMTOffset != null &&!oldr.accountInformation.customerTimeGMTOffset  .equals(  newr.accountInformation.customerTimeGMTOffset)) a.add("customerTimeGMTOffset is different");
        if(oldr.accountInformation.customerTimeZoneAbbreviation!=null   &&!oldr.accountInformation.customerTimeZoneAbbreviation  .equals(  newr.accountInformation.customerTimeZoneAbbreviation)) a.add("customerTimeZoneAbbreviation is different");
        if(oldr.accountInformation.legacyDispatchTerritory !=null &&!oldr.accountInformation.legacyDispatchTerritory  .equals(  newr.accountInformation.legacyDispatchTerritory)) a.add("legacyDispatchTerritory is different");
@@ -181,6 +183,8 @@ public class CompareResponses {
     	map.put("difference", a);
     	map.put("rxSessionOld", oldr.rxSessionIdentifier);
     	map.put("rxSessionNew", newr.rxSessionIdentifier);
+    	map.put("oldRes", (new Gson().toJson(oldr)));
+    	map.put("newRes",  (new Gson().toJson(newr)));
     	
     	return map;
 		
@@ -193,7 +197,7 @@ public class CompareResponses {
 		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
 		RestTemplate restTemplate = new RestTemplate();
-		String url = "http://rxmicro-test1.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
+		String url = "http://rxmicro-test2.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
 		ResponseEntity<RxProductInfoResponse> response = restTemplate.exchange(url, HttpMethod.GET,
 				new HttpEntity<>(headers), RxProductInfoResponse.class);
 		System.out.println("Called Old APi");
@@ -207,7 +211,8 @@ public class CompareResponses {
 		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
 		RestTemplate restTemplate = new RestTemplate();
-		String url = "http://rxmicro-test1.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
+//		String url = "http://rxmicro-test1.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
+		String url = "http://localhost:8084/rxProductInfo?etn="+tn;
 		ResponseEntity<RxProductInfoResponse> response = restTemplate.exchange(url, HttpMethod.GET,
 				new HttpEntity<>(headers), RxProductInfoResponse.class);
 		System.out.println("Called New APi");
