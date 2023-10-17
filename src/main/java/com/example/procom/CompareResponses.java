@@ -25,7 +25,11 @@ import com.lumen.productinfo.response.model.RxProductInfoResponse;
 public class CompareResponses {
 
 	public static void main(String[] args) {
-//		compareApi();
+		CompareResponses objCompareResponses = new CompareResponses();
+		List<Map<String, Object>> oList =objCompareResponses.compareApi(List.of("8509484875", "4078147846"));
+	
+		System.out.println(oList);
+	
 	}
 
 	public  List<Map<String, Object>> compareApi(List<String> tnArray) {
@@ -74,19 +78,32 @@ public class CompareResponses {
 
       if(oldr.recordsChoice != null &&oldr.recordsChoice.size() == newr.recordsChoice.size()){
     	  
-    	  oldr.recordsChoice.sort(new Comparator<RecordsChoice>() {
-  			@Override
-  			public int compare(RecordsChoice o1, RecordsChoice o2) {
-  				return o1.recordIdentifier.compareTo(o2.recordIdentifier);
-  			}
-          });
-          
-          newr.recordsChoice.sort(new Comparator<RecordsChoice>() {
-  			@Override
-  			public int compare(RecordsChoice o1, RecordsChoice o2) {
-  				return o1.recordIdentifier.compareTo(o2.recordIdentifier);
-  			}
-          });
+//    	  oldr.recordsChoice.sort(new Comparator<RecordsChoice>() {
+//  			@Override
+//  			public int compare(RecordsChoice o1, RecordsChoice o2) {
+//  				return o1.recordIdentifier.compareTo(o2.recordIdentifier);
+//  			}
+//          });
+//          
+//          newr.recordsChoice.sort(new Comparator<RecordsChoice>() {
+//  			@Override
+//  			public int compare(RecordsChoice o1, RecordsChoice o2) {
+//  				return o1.recordIdentifier.compareTo(o2.recordIdentifier);
+//  			}
+//          });
+    		 oldr.recordsChoice.sort(new Comparator<RecordsChoice>() {
+    	  			@Override
+    	  			public int compare(RecordsChoice o1, RecordsChoice o2) {
+    	  				return o1.recordIdentifier.compareTo(o2.listedName);
+    	  			}
+    	          });
+    	          
+    	          newr.recordsChoice.sort(new Comparator<RecordsChoice>() {
+    	  			@Override
+    	  			public int compare(RecordsChoice o1, RecordsChoice o2) {
+    	  				return o1.recordIdentifier.compareTo(o2.listedName);
+    	  			}
+    	          }); 
           
         for(int i =0; i<oldr.recordsChoice.size(); i++){
         if(oldr.recordsChoice.get(i).listedName!= null && !oldr.recordsChoice.get(i).listedName .equals( newr.recordsChoice.get(i).listedName) )a.add("listed name is different");
@@ -179,6 +196,16 @@ public class CompareResponses {
       
       //service line check
       
+      if(oldr.serviceLines != null && oldr.serviceLines.size() != newr.serviceLines.size()) a.add("serviceLines length is different");
+      
+      if(oldr.serviceLines != null && oldr.serviceLines.size() == newr.serviceLines.size()) {
+    	  
+    	  
+    	  
+    	  
+      }
+      
+      
 	}
     	map.put("difference", a);
     	map.put("rxSessionOld", oldr.rxSessionIdentifier);
@@ -197,7 +224,7 @@ public class CompareResponses {
 		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
 		RestTemplate restTemplate = new RestTemplate();
-		String url = "http://rxmicro-test2.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
+		String url = "http://rxmicro-test1.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
 		ResponseEntity<RxProductInfoResponse> response = restTemplate.exchange(url, HttpMethod.GET,
 				new HttpEntity<>(headers), RxProductInfoResponse.class);
 		System.out.println("Called Old APi");
@@ -211,8 +238,8 @@ public class CompareResponses {
 		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
 		RestTemplate restTemplate = new RestTemplate();
-//		String url = "http://rxmicro-test1.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
-		String url = "http://localhost:8084/rxProductInfo?etn="+tn;
+		String url = "http://rxmicro-test1.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
+//		String url = "http://localhost:8084/rxProductInfo?etn="+tn;
 		ResponseEntity<RxProductInfoResponse> response = restTemplate.exchange(url, HttpMethod.GET,
 				new HttpEntity<>(headers), RxProductInfoResponse.class);
 		System.out.println("Called New APi");
