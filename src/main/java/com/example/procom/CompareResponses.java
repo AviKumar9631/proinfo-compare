@@ -3,6 +3,7 @@ package com.example.procom;
 
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
+import com.lumen.productinfo.response.model.AccountInformation;
 import com.lumen.productinfo.response.model.CustomerAccountPrefInfo;
 import com.lumen.productinfo.response.model.CustomerProducts;
 import com.lumen.productinfo.response.model.Features;
@@ -29,8 +31,10 @@ public class CompareResponses {
 
 	public static void main(String[] args) {
 		CompareResponses objCompareResponses = new CompareResponses();
-		List<Map<String, Object>> oList =objCompareResponses.compareApi(List.of("8509484875", "4078147846"));  
-	
+		List<Map<String, Object>> oList = objCompareResponses.compareApi(List.of("3034661089", "3034691892",
+				 "3034608491", "3034652184", "3034690381","3034662795", "9704742483", "3034654171", "3034661237",
+				"3034660225" ));
+
 		System.out.println(oList);
 	
 	}
@@ -119,6 +123,7 @@ public class CompareResponses {
         if(oldr.recordsChoice.get(i).listedName!= null && !oldr.recordsChoice.get(i).listedName .equals( newr.recordsChoice.get(i).listedName) )a.add("listed name is different");
         if(oldr.recordsChoice.get(i).recordIdentifier  !=null && !oldr.recordsChoice.get(i).recordIdentifier .equals( newr.recordsChoice.get(i).recordIdentifier)) a.add("recordIdentifier  is different");
         if(oldr.recordsChoice.get(i).accountStatus   !=null && !oldr.recordsChoice.get(i).accountStatus .equals( newr.recordsChoice.get(i).accountStatus)) a.add("accountStatus is different");
+        if(oldr.recordsChoice.get(i).address != null) {
         if(oldr.recordsChoice.get(i).address.streetAddress  !=null && !oldr.recordsChoice.get(i).address.streetAddress .equals( newr.recordsChoice.get(i).address.streetAddress)) a.add("streetAddress is different");
         if( oldr.recordsChoice.get(i).address.addressLine1 !=null && !oldr.recordsChoice.get(i).address.addressLine1 .equals( newr.recordsChoice.get(i).address.addressLine1) )a.add("addressLine1 is different");
         if( oldr.recordsChoice.get(i).address.addressLine2  !=null && !oldr.recordsChoice.get(i).address.addressLine2 .equals( newr.recordsChoice.get(i).address.addressLine2)) a.add("addressLine2 is different");
@@ -126,12 +131,13 @@ public class CompareResponses {
         if( oldr.recordsChoice.get(i).address.stateProvince  !=null && !oldr.recordsChoice.get(i).address.stateProvince .equals( newr.recordsChoice.get(i).address.stateProvince)) a.add("stateProvince is different");
         if( oldr.recordsChoice.get(i).address.countryCode  !=null && !oldr.recordsChoice.get(i).address.countryCode .equals( newr.recordsChoice.get(i).address.countryCode)) a.add("countryCode is different");
         if(oldr.recordsChoice.get(i).address.postalCode  !=null && !oldr.recordsChoice.get(i).address.postalCode .equals( newr.recordsChoice.get(i).address.postalCode)) a.add("postalCode is different");
-        }
+        }}
       }
 
         
 
       //account
+      if(oldr.accountInformation != null) {
        if(oldr.accountInformation.billingIdentifier!= null && !oldr.accountInformation.billingIdentifier .equals( newr.accountInformation.billingIdentifier)) a.add("billingIdentifier is different");
        if(oldr.accountInformation.baid != null &&!oldr.accountInformation.baid  .equals(  newr.accountInformation.baid)) a.add("baid is different");
        if(oldr.accountInformation.billingName != null && !oldr.accountInformation.billingName  .equals(  newr.accountInformation.billingName) )a.add("billingName is different");
@@ -156,9 +162,11 @@ public class CompareResponses {
        if(oldr.accountInformation.billingSystem != null &&!oldr.accountInformation.billingSystem  .equals(  newr.accountInformation.billingSystem)) a.add("billingSystem is different");
        if(oldr.accountInformation.creditCardLastDigits !=null  &&!oldr.accountInformation.creditCardLastDigits  .equals(  newr.accountInformation.creditCardLastDigits) )a.add("creditCardLastDigits is different");
        if(oldr.accountInformation.verificationCode!=null  &&!oldr.accountInformation.verificationCode  .equals(  newr.accountInformation.verificationCode)) a.add("verificationCode is different");
-       
-       if(CollectionUtils.isEqualCollection(oldr.accountInformation.usocsOnAccount, newr.accountInformation.usocsOnAccount) ==  false) a.add("Usocs are different");
-       
+		if (oldr.accountInformation.usocsOnAccount != null) {
+			Collections.sort(oldr.accountInformation.usocsOnAccount);
+			Collections.sort(newr.accountInformation.usocsOnAccount);
+			if (oldr.accountInformation.usocsOnAccount.equals(newr.accountInformation.usocsOnAccount) == false)a.add("Usocs are different");
+		}
        if(oldr.accountInformation.smsDigitalDialogPreferences.subscribedSmsNumber!= null&& !oldr.accountInformation.smsDigitalDialogPreferences.subscribedSmsNumber .equals( newr.accountInformation.smsDigitalDialogPreferences.subscribedSmsNumber)) a.add("subscribedSmsNumber is different");
        if(oldr.accountInformation.smsDigitalDialogPreferences.repairSubscription != newr.accountInformation.smsDigitalDialogPreferences.repairSubscription) a.add("repairSubscription is different");
        if(oldr.accountInformation.smsDigitalDialogPreferences.defaultContact != newr.accountInformation.smsDigitalDialogPreferences.defaultContact) a.add("defaultContact is different");
@@ -202,7 +210,7 @@ public class CompareResponses {
         		  if(!oldr.accountInformation.authorizationDetails.get(i).authType.description.equals(newr.accountInformation.authorizationDetails.get(i).authType.description)) a.add("authType.description is different");
     		  }
     	  }
-      }
+      }}
       
       //service line check
       
@@ -262,6 +270,11 @@ public class CompareResponses {
     			for(int k=0; k<oldr.serviceLines.get(i).customerProducts.size(); k++) {
 //	    		if(oldr.serviceLines.get(i).customerProducts.get(k).customerProductIdentifier != null && oldr.serviceLines.get(i).customerProducts.get(i).customerProductIdentifier.equals( newr.serviceLines.get(i).customerProducts.get(i).customerProductIdentifier))a.add("customerProductIdentifier is different");
 	    		if(oldr.serviceLines.get(i).customerProducts.get(k).usoc != null && !oldr.serviceLines.get(i).customerProducts.get(k).usoc.equals(  newr.serviceLines.get(i).customerProducts.get(k).usoc))a.add("usoc is different"); 		
+	    		if (oldr.serviceLines.get(i).customerProducts.get(k).otherUsocs != null) {
+	    			Collections.sort(oldr.serviceLines.get(i).customerProducts.get(k).otherUsocs);
+	    			Collections.sort(newr.serviceLines.get(i).customerProducts.get(k).otherUsocs);
+	    			if (oldr.serviceLines.get(i).customerProducts.get(k).otherUsocs.equals(newr.serviceLines.get(i).customerProducts.get(k).otherUsocs) == false)a.add("Usocs are different");
+	    		}
 	    		if(CollectionUtils.isEqualCollection(oldr.serviceLines.get(i).customerProducts.get(k).otherUsocs ,  newr.serviceLines.get(i).customerProducts.get(k).otherUsocs) ==  false) a.add("otherUsocs are different");
 	    		if(oldr.serviceLines.get(i).customerProducts.get(k).highLevelProduct != null && !oldr.serviceLines.get(i).customerProducts.get(k).highLevelProduct.equals(  newr.serviceLines.get(i).customerProducts.get(k).highLevelProduct))a.add("highLevelProduct is different");
 	    		if(oldr.serviceLines.get(i).customerProducts.get(k).isActive != newr.serviceLines.get(i).customerProducts.get(k).isActive)a.add("isActive is different");
