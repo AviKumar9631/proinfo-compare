@@ -18,15 +18,18 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 import com.lumen.productinfo.response.model.CustomerAccountPrefInfo;
+import com.lumen.productinfo.response.model.CustomerProducts;
+import com.lumen.productinfo.response.model.Features;
 import com.lumen.productinfo.response.model.RecordsChoice;
 import com.lumen.productinfo.response.model.RxProductInfoResponse;
+import com.lumen.productinfo.response.model.ServiceLines;
 
 @Service
 public class CompareResponses {
 
 	public static void main(String[] args) {
 		CompareResponses objCompareResponses = new CompareResponses();
-		List<Map<String, Object>> oList =objCompareResponses.compareApi(List.of("8509484875", "4078147846"));
+		List<Map<String, Object>> oList =objCompareResponses.compareApi(List.of("8509484875", "4078147846"));  
 	
 		System.out.println(oList);
 	
@@ -78,32 +81,39 @@ public class CompareResponses {
 
       if(oldr.recordsChoice != null &&oldr.recordsChoice.size() == newr.recordsChoice.size()){
     	  
-//    	  oldr.recordsChoice.sort(new Comparator<RecordsChoice>() {
-//  			@Override
-//  			public int compare(RecordsChoice o1, RecordsChoice o2) {
-//  				return o1.recordIdentifier.compareTo(o2.recordIdentifier);
-//  			}
-//          });
-//          
-//          newr.recordsChoice.sort(new Comparator<RecordsChoice>() {
-//  			@Override
-//  			public int compare(RecordsChoice o1, RecordsChoice o2) {
-//  				return o1.recordIdentifier.compareTo(o2.recordIdentifier);
-//  			}
-//          });
-    		 oldr.recordsChoice.sort(new Comparator<RecordsChoice>() {
-    	  			@Override
-    	  			public int compare(RecordsChoice o1, RecordsChoice o2) {
-    	  				return o1.recordIdentifier.compareTo(o2.listedName);
-    	  			}
-    	          });
-    	          
-    	          newr.recordsChoice.sort(new Comparator<RecordsChoice>() {
-    	  			@Override
-    	  			public int compare(RecordsChoice o1, RecordsChoice o2) {
-    	  				return o1.recordIdentifier.compareTo(o2.listedName);
-    	  			}
-    	          }); 
+    	  oldr.recordsChoice.sort(new Comparator<RecordsChoice>() {
+  			@Override
+  			public int compare(RecordsChoice o1, RecordsChoice o2) {
+  				if(o1.recordIdentifier != null ) {
+  				return o1.recordIdentifier.compareTo(o2.recordIdentifier);}
+  				else {
+  					return o1.listedName.compareTo(o2.listedName);}
+  				}
+          });
+          
+          newr.recordsChoice.sort(new Comparator<RecordsChoice>() {
+  			@Override
+  			public int compare(RecordsChoice o1, RecordsChoice o2) {
+  				if(o1.recordIdentifier != null ) {
+  				return o1.recordIdentifier.compareTo(o2.recordIdentifier);}
+  				else {
+  					return o1.listedName.compareTo(o2.listedName);
+  				}
+  			}
+          });
+//    		 oldr.recordsChoice.sort(new Comparator<RecordsChoice>() {
+//    	  			@Override
+//    	  			public int compare(RecordsChoice o1, RecordsChoice o2) {
+//    	  				return o1.recordIdentifier.compareTo(o2.listedName);
+//    	  			}
+//    	          });
+//    	          
+//    	          newr.recordsChoice.sort(new Comparator<RecordsChoice>() {
+//    	  			@Override
+//    	  			public int compare(RecordsChoice o1, RecordsChoice o2) {
+//    	  				return o1.recordIdentifier.compareTo(o2.listedName);
+//    	  			}
+//    	          }); 
           
         for(int i =0; i<oldr.recordsChoice.size(); i++){
         if(oldr.recordsChoice.get(i).listedName!= null && !oldr.recordsChoice.get(i).listedName .equals( newr.recordsChoice.get(i).listedName) )a.add("listed name is different");
@@ -199,13 +209,118 @@ public class CompareResponses {
       if(oldr.serviceLines != null && oldr.serviceLines.size() != newr.serviceLines.size()) a.add("serviceLines length is different");
       
       if(oldr.serviceLines != null && oldr.serviceLines.size() == newr.serviceLines.size()) {
-    	  
-    	  
-    	  
-    	  
-      }
-      
-      
+	    	  oldr.serviceLines.sort(new Comparator<ServiceLines>() {
+	    		  @Override
+	    		  public int compare(ServiceLines s1, ServiceLines s2) {
+	    			  return s1.serviceTnOrCktId.compareTo(s2.serviceTnOrCktId);
+	    		  }  
+			});
+		    	  newr.serviceLines.sort(new Comparator<ServiceLines>() {
+		    		  @Override
+		    		  public int compare(ServiceLines s1, ServiceLines s2) {
+		    			  return s1.serviceTnOrCktId.compareTo(s2.serviceTnOrCktId);
+		    		  }
+				});
+    	for(int i=0; i<oldr.serviceLines.size(); i++) {
+    		if(oldr.serviceLines.get(i).serviceTnOrCktId != null && !oldr.serviceLines.get(i).serviceTnOrCktId.equals(newr.serviceLines.get(i).serviceTnOrCktId))a.add("serviceTnOrCktId is different");
+    		if(oldr.serviceLines.get(i).centralOffice!=null && !oldr.serviceLines.get(i).centralOffice.equals(newr.serviceLines.get(i).centralOffice))a.add("centralOffice is different");
+    		if(oldr.serviceLines.get(i).locationTimeZone!= null && !oldr.serviceLines.get(i).locationTimeZone.equals(newr.serviceLines.get(i).locationTimeZone))a.add("locationTimeZone is different");
+    		if(oldr.serviceLines.get(i).serviceAddress !=null) {
+    			if(oldr.serviceLines.get(i).serviceAddress.streetAddress!=null && !oldr.serviceLines.get(i).serviceAddress.streetAddress.equals(newr.serviceLines.get(i).serviceAddress.streetAddress))a.add("streetAddress of serviceAddress is different");
+    			if(oldr.serviceLines.get(i).serviceAddress.addressLine1!=null && !oldr.serviceLines.get(i).serviceAddress.addressLine1.equals(newr.serviceLines.get(i).serviceAddress.addressLine1))a.add("addressLine1 of serviceAddress is different");
+    			if(oldr.serviceLines.get(i).serviceAddress.addressLine2!=null && !oldr.serviceLines.get(i).serviceAddress.addressLine2.equals(newr.serviceLines.get(i).serviceAddress.addressLine2))a.add("addressLine2 of serviceAddress is different");
+    			if(oldr.serviceLines.get(i).serviceAddress.city!=null && !oldr.serviceLines.get(i).serviceAddress.city.equals(newr.serviceLines.get(i).serviceAddress.city))a.add("city of serviceAddress is different");
+    			if(oldr.serviceLines.get(i).serviceAddress.stateProvince!=null && !oldr.serviceLines.get(i).serviceAddress.stateProvince.equals(newr.serviceLines.get(i).serviceAddress.stateProvince))a.add("stateProvince of serviceAddress is different");
+    			if(oldr.serviceLines.get(i).serviceAddress.postalCode!=null && !oldr.serviceLines.get(i).serviceAddress.postalCode.equals(newr.serviceLines.get(i).serviceAddress.postalCode))a.add("postalCode of serviceAddress is different");
+    			if(oldr.serviceLines.get(i).serviceAddress.countryCode!=null && !oldr.serviceLines.get(i).serviceAddress.countryCode.equals(newr.serviceLines.get(i).serviceAddress.countryCode))a.add("countryCode of serviceAddress is different");
+    		}
+    		if(oldr.serviceLines.get(i).hasGPON != newr.serviceLines.get(i).hasGPON)a.add("hasGPON is different");
+    		if(oldr.serviceLines.get(i).accessTech != null && !oldr.serviceLines.get(i).accessTech.equals(newr.serviceLines.get(i).accessTech))a.add("accessTech is different");
+    		if(oldr.serviceLines.get(i).hasVectoring != newr.serviceLines.get(i).hasVectoring)a.add("hasVectoring is different");
+    		if(oldr.serviceLines.get(i).isNIC != newr.serviceLines.get(i).isNIC)a.add("isNIC is different");
+    		if(oldr.serviceLines.get(i).isClickConverted != newr.serviceLines.get(i).isClickConverted)a.add("isClickConverted is different");
+    		if(oldr.serviceLines.get(i).isSfsConverted != newr.serviceLines.get(i).isSfsConverted)a.add("isSfsConverted is different");
+    		if(oldr.serviceLines.get(i).isPrivateCarriage != newr.serviceLines.get(i).isPrivateCarriage)a.add("isPrivateCarriage is different");
+    		if(oldr.serviceLines.get(i).ihstFid != newr.serviceLines.get(i).ihstFid)a.add("ihstFid is different");
+    		if(oldr.serviceLines.get(i).isVISP != newr.serviceLines.get(i).isVISP)a.add("isVISP is different");
+    		if(oldr.serviceLines.get(i).hasProfile17a != newr.serviceLines.get(i).hasProfile17a)a.add("hasProfile17a is different");
+    		if(oldr.serviceLines.get(i).hasInsideWireMaintenancePlan != newr.serviceLines.get(i).hasInsideWireMaintenancePlan)a.add("hasInsideWireMaintenancePlan is different");
+    		if(oldr.serviceLines.get(i).hasSynacor != newr.serviceLines.get(i).hasSynacor)a.add("hasSynacor is different");
+    		if(oldr.serviceLines.get(i).customerProducts != null) {
+    			oldr.serviceLines.get(i).customerProducts.sort(new Comparator<CustomerProducts>() {
+  	    		  @Override
+  	    		  public int compare(CustomerProducts c1, CustomerProducts c2) {
+  	    			  return c1.highLevelProduct.compareTo(c2.highLevelProduct);
+  	    		  }  
+  			});
+  	    	  newr.serviceLines.get(i).customerProducts.sort(new Comparator<CustomerProducts>() {
+  	    		  @Override
+  	    		  public int compare(CustomerProducts c1, CustomerProducts c2) {
+  	    			  return c1.highLevelProduct.compareTo(c2.highLevelProduct);
+  	    		  }
+  			});
+    			for(int k=0; k<oldr.serviceLines.get(i).customerProducts.size(); k++) {
+//	    		if(oldr.serviceLines.get(i).customerProducts.get(k).customerProductIdentifier != null && oldr.serviceLines.get(i).customerProducts.get(i).customerProductIdentifier.equals( newr.serviceLines.get(i).customerProducts.get(i).customerProductIdentifier))a.add("customerProductIdentifier is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).usoc != null && !oldr.serviceLines.get(i).customerProducts.get(k).usoc.equals(  newr.serviceLines.get(i).customerProducts.get(k).usoc))a.add("usoc is different"); 		
+	    		if(CollectionUtils.isEqualCollection(oldr.serviceLines.get(i).customerProducts.get(k).otherUsocs ,  newr.serviceLines.get(i).customerProducts.get(k).otherUsocs) ==  false) a.add("otherUsocs are different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).highLevelProduct != null && !oldr.serviceLines.get(i).customerProducts.get(k).highLevelProduct.equals(  newr.serviceLines.get(i).customerProducts.get(k).highLevelProduct))a.add("highLevelProduct is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).isActive != newr.serviceLines.get(i).customerProducts.get(k).isActive)a.add("isActive is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).activationDate != null && !oldr.serviceLines.get(i).customerProducts.get(k).activationDate.equals( newr.serviceLines.get(i).customerProducts.get(k).activationDate))a.add("activationDate is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).productStatus != null && !oldr.serviceLines.get(i).customerProducts.get(k).productStatus.equals( newr.serviceLines.get(i).customerProducts.get(k).productStatus))a.add("productStatus is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).hasAtEaseFeature != newr.serviceLines.get(i).customerProducts.get(k).hasAtEaseFeature)a.add("hasAtEaseFeature is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).purchasedSpeedDownKbps != null && !oldr.serviceLines.get(i).customerProducts.get(k).purchasedSpeedDownKbps.equals(newr.serviceLines.get(i).customerProducts.get(k).purchasedSpeedDownKbps))a.add("purchasedSpeedDownKbps is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).isVacationSuspend != newr.serviceLines.get(i).customerProducts.get(k).isVacationSuspend)a.add("isVacationSuspend is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).allServicesDeniedForNonPayment != newr.serviceLines.get(i).customerProducts.get(k).allServicesDeniedForNonPayment)a.add("allServicesDeniedForNonPayment is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).atEaseLevel != null && !oldr.serviceLines.get(i).customerProducts.get(k).atEaseLevel.equals(newr.serviceLines.get(i).customerProducts.get(k).atEaseLevel))a.add("atEaseLevel is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).hasTechInstallUSOC != null && !oldr.serviceLines.get(i).customerProducts.get(k).hasTechInstallUSOC.equals(newr.serviceLines.get(i).customerProducts.get(k).hasTechInstallUSOC))a.add("hasTechInstallUSOC is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).connectionType != null && !oldr.serviceLines.get(i).customerProducts.get(k).connectionType.equals(newr.serviceLines.get(i).customerProducts.get(k).connectionType))a.add("connectionType is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).isCentralizedBRAS != null && !oldr.serviceLines.get(i).customerProducts.get(k).isCentralizedBRAS.equals(newr.serviceLines.get(i).customerProducts.get(k).isCentralizedBRAS))a.add("isCentralizedBRAS is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).invariantId != null && !oldr.serviceLines.get(i).customerProducts.get(k).invariantId.equals(newr.serviceLines.get(i).customerProducts.get(k).invariantId))a.add("invariantId is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).isGIDRelevant != null && !oldr.serviceLines.get(i).customerProducts.get(k).isGIDRelevant.equals(newr.serviceLines.get(i).customerProducts.get(k).isGIDRelevant))a.add("isGIDRelevant is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).sourceOfOpenSessionInfo != null && !oldr.serviceLines.get(i).customerProducts.get(k).sourceOfOpenSessionInfo.equals(newr.serviceLines.get(i).customerProducts.get(k).sourceOfOpenSessionInfo))a.add("sourceOfOpenSessionInfo is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).modemOwnership != null && !oldr.serviceLines.get(i).customerProducts.get(k).modemOwnership.equals(newr.serviceLines.get(i).customerProducts.get(k).modemOwnership))a.add("modemOwnership is different");
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).ossProfile !=null) {
+	    			  if(oldr.serviceLines.get(i).customerProducts.get(k).ossProfile.ossProfileName != null && !oldr.serviceLines.get(i).customerProducts.get(k).ossProfile.ossProfileName.equals(newr.serviceLines.get(i).customerProducts.get(k).ossProfile.ossProfileName))a.add("ossProfileName is different");
+	    			  if(oldr.serviceLines.get(i).customerProducts.get(k).ossProfile.billingSource!= null && !oldr.serviceLines.get(i).customerProducts.get(k).ossProfile.billingSource.equals(newr.serviceLines.get(i).customerProducts.get(k).ossProfile.billingSource))a.add("billingSource is different");
+	    			  if(oldr.serviceLines.get(i).customerProducts.get(k).ossProfile.inventorySource != null && !oldr.serviceLines.get(i).customerProducts.get(k).ossProfile.inventorySource.equals(newr.serviceLines.get(i).customerProducts.get(k).ossProfile.inventorySource))a.add("inventorySource is different");
+	    			  if(oldr.serviceLines.get(i).customerProducts.get(k).ossProfile.ticketingSystem != null && !oldr.serviceLines.get(i).customerProducts.get(k).ossProfile.ticketingSystem.equals(newr.serviceLines.get(i).customerProducts.get(k).ossProfile.ticketingSystem))a.add("ticketingSystem is different");
+	    			  if(oldr.serviceLines.get(i).customerProducts.get(k).ossProfile.dispatchSystem != null && !oldr.serviceLines.get(i).customerProducts.get(k).ossProfile.dispatchSystem.equals(newr.serviceLines.get(i).customerProducts.get(k).ossProfile.dispatchSystem))a.add("dispatchSystem is different");
+	    		  }   
+	    		
+	    		if(oldr.serviceLines.get(i).customerProducts.get(k).features.size()==
+	    				newr.serviceLines.get(i).customerProducts.get(k).features.size()){
+//		    			if(oldr.serviceLines.get(i).customerProducts.get(k).features.size()>0 && oldr.serviceLines.get(i).customerProducts.get(k).features !=null ) {
+			    		if( oldr.serviceLines.get(i).customerProducts.get(k).features !=null ) {
+		    				oldr.serviceLines.get(i).customerProducts.get(k).features.sort(new Comparator<Features>() {
+	    	  	    		  @Override
+	    	  	    		  public int compare(Features f1, Features f2) {
+	    	  	    			  if(f1.featureName != null) {
+	    	  	    			  return f1.featureName.compareTo(f2.featureName);}
+	    	  	    			  else {
+	    	  	    				return f1.featureIndicator.compareTo(f2.featureIndicator);
+	    	  	    			  }
+	    	  	    		  }  
+	    	  			});
+		    	  	    	  newr.serviceLines.get(i).customerProducts.get(k).features.sort(new Comparator<Features>() {
+		    	  	    		  @Override
+		    	  	    		  public int compare(Features f1, Features f2) {
+		    	  	    			if(f1.featureName != null) {
+		    	  	    			  return f1.featureName.compareTo(f2.featureName);}
+		    	  	    			else {
+		    	  	    				return f1.featureIndicator.compareTo(f2.featureIndicator);
+		    	  	    			  }
+		    	  	    		  }
+		    	  			});
+		    			for(int j =0; j<oldr.serviceLines.get(i).customerProducts.get(k).features.size() ; j++) {	 
+		    	    			  if(oldr.serviceLines.get(i).customerProducts.get(k).features.get(j).featureName != null && !oldr.serviceLines.get(i).customerProducts.get(k).features.get(j).featureName.equals(newr.serviceLines.get(i).customerProducts.get(k).features.get(j).featureName))a.add("featureName is different");
+		    	    			  if(oldr.serviceLines.get(i).customerProducts.get(k).features.get(j).featureIndicator != null && !oldr.serviceLines.get(i).customerProducts.get(k).features.get(j).featureIndicator.equals(newr.serviceLines.get(i).customerProducts.get(k).features.get(j).featureIndicator))a.add("featureIndicator is different");
+	    	    		  
+	    			}}
+	    			
+	    		}}
+    	}  
+    	}  
+    }  
 	}
     	map.put("difference", a);
     	map.put("rxSessionOld", oldr.rxSessionIdentifier);
