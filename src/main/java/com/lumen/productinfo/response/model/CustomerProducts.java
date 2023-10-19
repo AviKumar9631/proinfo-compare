@@ -18,7 +18,7 @@ public class CustomerProducts {
     
 	public String usoc;
     
-	public Set<String> otherUsocs = new HashSet<String>();
+	public List otherUsocs;
     
 	public String highLevelProduct;
     
@@ -86,11 +86,11 @@ public class CustomerProducts {
 		this.usoc = usoc;
 	}
 
-	public Set<String> getOtherUsocs() {
+	public List getOtherUsocs() {
 		return otherUsocs;
 	}
 
-	public void setOtherUsocs(Set<String> otherUsocs) {
+	public void setOtherUsocs(List otherUsocs) {
 		this.otherUsocs = otherUsocs;
 	}
 

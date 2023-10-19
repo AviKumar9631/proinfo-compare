@@ -39,7 +39,7 @@ public class AccountInformation {
 	
 	public String classOfService;
 	
-	public Set<String> usocsOnAccount = new HashSet<String>();
+	public List usocsOnAccount;
 
 	public String last4SocialSecurityNumber;
 	
@@ -151,11 +151,11 @@ public class AccountInformation {
 		this.classOfService = classOfService;
 	}
 
-	public Set<String> getUsocsOnAccount() {
+	public List getUsocsOnAccount() {
 		return usocsOnAccount;
 	}
 
-	public void setUsocsOnAccount(Set<String> usocsOnAccount) {
+	public void setUsocsOnAccount(List usocsOnAccount) {
 		this.usocsOnAccount = usocsOnAccount;
 	}
 

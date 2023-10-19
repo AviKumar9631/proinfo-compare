@@ -2,11 +2,11 @@ package com.lumen.productinfo.response.model;
 
 public class OssProfile {
 
-	private String ossProfileName;
-	private String billingSource;
-	private String inventorySource;
-	private String ticketingSystem;
-	private String dispatchSystem;
+	public String ossProfileName;
+	public String billingSource;
+	public String inventorySource;
+	public String ticketingSystem;
+	public String dispatchSystem;
 	
 	public String getOssProfileName() {
 		return ossProfileName;

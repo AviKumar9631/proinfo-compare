@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceAddress {
-	private String streetAddress;
+	public String streetAddress;
 
 	public String addressLine1;
 
