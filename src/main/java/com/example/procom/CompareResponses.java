@@ -45,11 +45,20 @@ public class CompareResponses {
 
 		for (String tn : tnArray) {
 			System.out.println("---------------------------------------------------");
-			System.out.println("Called :: "+tn);
+			System.out.println("Called :: "+tn);	Map<String, Object> resultMap= null;
+			try {
 			RxProductInfoResponse existingApiResponse = callExistingApi(tn);
 			RxProductInfoResponse newApiResponse = callNewApi(tn);
-
-			Map<String, Object> resultMap= compareResponses(existingApiResponse, newApiResponse);
+			try {
+			resultMap= compareResponses(existingApiResponse, newApiResponse);
+			}catch(Exception e) {
+				resultMap = new HashMap<String, Object>();
+				resultMap.put("difference", "Error while comparing");
+			}
+			}catch(Exception e) {
+				resultMap = new HashMap<String, Object>();
+				resultMap.put("difference", "Error while fetch");
+			}
 			resultMap.put("Tn", tn);
 			list.add(resultMap);
 			System.out.println(resultMap);
@@ -352,7 +361,7 @@ public class CompareResponses {
 		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
 		RestTemplate restTemplate = new RestTemplate();
-		String url = "http://rxmicro-test1.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
+		String url = "http://rxmicro-test2.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
 		ResponseEntity<RxProductInfoResponse> response = restTemplate.exchange(url, HttpMethod.GET,
 				new HttpEntity<>(headers), RxProductInfoResponse.class);
 		System.out.println("Called Old APi");
@@ -366,8 +375,8 @@ public class CompareResponses {
 		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
 		RestTemplate restTemplate = new RestTemplate();
-		String url = "http://rxmicro-test1.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
-//		String url = "http://localhost:8084/rxProductInfo?etn="+tn;
+//		String url = "http://rxmicro-test1.kubeodc-test.corp.intranet/rxmicro/services/rxProductInfo?etn=" + tn;
+		String url = "http://localhost:8084/rxProductInfo?etn="+tn;
 		ResponseEntity<RxProductInfoResponse> response = restTemplate.exchange(url, HttpMethod.GET,
 				new HttpEntity<>(headers), RxProductInfoResponse.class);
 		System.out.println("Called New APi");
