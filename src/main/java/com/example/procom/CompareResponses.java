@@ -31,9 +31,7 @@ public class CompareResponses {
 
 	public static void main(String[] args) {
 		CompareResponses objCompareResponses = new CompareResponses();
-		List<Map<String, Object>> oList = objCompareResponses.compareApi(List.of("3034661089", "3034691892",
-				 "3034608491", "3034652184", "3034690381","3034662795", "9704742483", "3034654171", "3034661237",
-				"3034660225" ));
+		List<Map<String, Object>> oList = objCompareResponses.compareApi(List.of("3034661089" ));
 
 		System.out.println(oList);
 	
@@ -52,10 +50,12 @@ public class CompareResponses {
 			try {
 			resultMap= compareResponses(existingApiResponse, newApiResponse);
 			}catch(Exception e) {
+				if(resultMap == null)
 				resultMap = new HashMap<String, Object>();
 				resultMap.put("difference", "Error while comparing");
 			}
 			}catch(Exception e) {
+				if(resultMap == null)
 				resultMap = new HashMap<String, Object>();
 				resultMap.put("difference", "Error while fetch");
 			}
